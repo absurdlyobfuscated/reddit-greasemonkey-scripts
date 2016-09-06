@@ -1,2 +1,4 @@
-# reddit-image-info
-A greasemonkey script to show image/video information from imgur and misc image hosting sites for reddit posts
+# reddit-greasemonkey-scripts
+Greasemonkey scripts for reddit.
+
+reddit image info: Shows image/video information from imgur and misc image hosting sites
