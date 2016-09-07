@@ -248,7 +248,7 @@ function showImgurInfo(link, match, animated, isGallery, isAlbum, author, width,
 function addExpando(entry, positionElement, video, album, iframe, imgurAlbumId, imgSrc, webmSrc, mp4Src, iframeSrc)
 {
   $("<a class=\"" + (video? "video-muted" : "image") + " collapsed collapsedExpando imageInfoExpando\" style=\"float: left; height: 23px; width: 23px; margin: 2px 5px 2px 0px; background-image: url('https://www.redditstatic.com/sprite-reddit.reNnXuo8_bA.png'); background-position: 0px -613px; background-repeat: no-repeat;\"></a>").insertBefore(positionElement); // RES removes .expando-button class elements, need to manually style custom element here as a result
-  $("<div class=\"expando imageInfoExpandoContent\" style=\"display: none; max-width: 100%;\">Loading...</div>").insertAfter(entry.find("ul.flat-list"));
+  $("<div class=\"imageInfoExpandoContent\" style=\"display: none; max-width: 100%;\">Loading...</div>").insertAfter(entry.find("ul.flat-list"));
   var expando = entry.find(".imageInfoExpandoContent");
   var albumExpandoData = null;
   if (video && !album)
