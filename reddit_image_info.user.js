@@ -4,7 +4,7 @@
 // @description Reddit image info
 // @include     https://*.reddit.com/*
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
-// @version     1.1.3
+// @version     1.1.3.2
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_listValues
@@ -44,9 +44,9 @@ var checkTopLevelCommentsOnly = false;
 
 // Imgur author warnings: [["author", "warning description", "backgroundcolor", "textcolor"], ...]
 var authorWarnings = [
-  [/^(Jumzler|popularnow|LenisModels1|FunnyLand|BrevleyDiamond|viralspell|apkapps|AnimalsCrazy|seoenroll|hansreal999|doublehot|mouyanali55|sohail3669998|lovesashagrey|droidkaran|advinclark|apexablog|Freechannelgame|NishaSen|HiraKhan00753|BestFail|anondexter786|andrew1122|thehrtailoo|nataliaaftermath|Katherinerpinkham|omgrides|oliverisback|rakeshhocrox|shez12|usmanmehmood2014|Dostosalam|catsneko|funstop|ijazjaan12|Revanoz|JennyMarry|waqasarshad|patrickweberz|Theni|anees123|Sarajaan|sainib626|cthoughtz|THaruGunawardhana|Quotesomnia|UsmanMani|Statelessss|hasnian007|hasnain007|viralcontent|thefunnynews|UshaPriya|rishitha1986|wukangye|smith64|asadblogger|99Tunes|sunnykhan2163|pearlriver|livestreambull11|active999|dulocemu|1i2i3i4i|MuhammadZeeshanAshraf|shiblu001|goodfotos|fotostoday|iloveyouallhere|Redditaccounts|odosta|ssrgupta|funngeeks|Virgo200|dailynewspaperpk|bellarocks1|inspiringfeed|SajidAliturri|MikeConnell|adam460|cr70100|janhanzab|geebrodo|fianacra|saba456|saluzia|meghissmeghiss|mikejohnsonsq|MyDogLikes|katrinasweety|heyshanug|AllTechAbout|walllo|celebritiesmania|mylocurtisgold|iwebAmazingThings|meelak007|Fashiontactics|WakasKhalid|Viralnewzz|snwz|wakaskhalid1989|mrandmrsjhoni|Zuqarnain|lorrainemcguire|9hues|IKNIAZI|JessicaCraz|Michelew|RajaArsalan|MuhmmadMughal|Diamondkickk|eyyina|VerlyMarket|thelolagemannu|prasad999|anon071|randomgibberishs|Jujubeanie646|coronalmassejections|PotatoesPotates|OsamaAhmad|bestclones|ansarig|wirlog|boyaji2426|Bilalahmed12|qasimali001|pinki22|moviesmag|MarquisDeSadeVIIl|Bilalahmed1996|khokonapon|naeemkkk|OksanaShevchenko|qureshi778|Imtiazkrk|WOWSOMEAPP|itsmegloria|ViralPlaces|porakopal5|noormohd405|albakistan|newmovies2k|emily008|ShareWorldOnline|yasirilyas33|adamminhas12|EspnLive|RisteJordanoski|RustamSatti|WaheedChohan|funworldimaginator|micalalex|reallove23|usman634|trendingnow|upers302|wallpaperhdpk|waseem42|syedasadsheeraz|phunkyp77|hammad4466|TheHappyHumans23456|AhmedSheno|DavidBrents|oaques|justin8b6cvw|socialispiice|ThugLifeMemes|azhar190|amerxp00|dhealthfitness|NabeelAlvi|Phenomenic|uslivestream|usmanali173|fashionfusion|nomantufail|juduma|jonnybagofdonuts|ladynik|mornabo|viraltodays|lovenest|jobhawks|shitMH|usm05|Mrimgurianz|Shezadadil|ShivKumar2312|com9000|Apnehd|70mmarena|SoniaKapoor007|Tehminasani|sachinyadav1|nevershutupnet|oicu|sandinglondoncoUK|piaskabir|iamtocute|RSamual|freeustad|bradpifffff|creedenz|lemonfridge|thursdaynightfootballlivejetsvspatriots|muneeb3372|tchapiiila|pontifex2|pontifex\d+|sidhu340|jawwadhussain|Apnehd|coolboyy1991|bloggingtrendz|Rakesh216|Newsbbc|smileyrose|GiftsFromMars|MuhammedUmar|gongobonk|nazranagul|gretai|rypa|DoctorsAdvice|ShorabShanto09|sheikhsherry|beautysomething|Recipesbar|anayat031|Robbasaurusrex|rachaelblake007|artcollections25|qptopm|YoussefHamdi|jams13242|jenniferstuart|AtaRehman|wittenvdp|alinaafoster|unikilarki|MohiniKumari|kzeerox|MichelleKeeganUK|relaxedpath|KkossAsa|ShyamOruganti|theUmarFarooq|tskdevelopers|alexryan360|DonaldTrumpPresident|CrazyThing|august04|Udaya12|sweettania|mariakhan384mz|zohaib615|ShahzaibAnwar|YousafBhutta|zola18|ACchannel|somewin|ACchannel|SoniaRizvi|Xainkungjee|chadin12|hajar74|DailyzFun|bhupifxartist|seoanubhavgarg|dailypakistani|andyben|powerforever|ritanmnews|bigggggy|SelfishJerry|sayhi0092|top10newvideo|tronghai175|mshoaib|artikelnummer|ParmjitSingh|WladimirKlitschkovsAlexLeapailivestreaming|SportsBait|RosalieOdell|chiaalain|samsmith2|ustype|rahulraj1989|mooolander)$/, "spam", "red"],
+  [/^(Jumzler|popularnow|LenisModels1|FunnyLand|BrevleyDiamond|viralspell|apkapps|AnimalsCrazy|seoenroll|hansreal999|doublehot|mouyanali55|sohail3669998|lovesashagrey|droidkaran|advinclark|apexablog|Freechannelgame|NishaSen|HiraKhan00753|BestFail|anondexter786|andrew1122|thehrtailoo|nataliaaftermath|Katherinerpinkham|omgrides|oliverisback|rakeshhocrox|shez12|usmanmehmood2014|Dostosalam|catsneko|funstop|ijazjaan12|Revanoz|JennyMarry|waqasarshad|patrickweberz|Theni|anees123|Sarajaan|sainib626|cthoughtz|THaruGunawardhana|Quotesomnia|UsmanMani|Statelessss|hasnian007|hasnain007|viralcontent|thefunnynews|UshaPriya|rishitha1986|wukangye|smith64|asadblogger|99Tunes|sunnykhan2163|pearlriver|livestreambull11|active999|dulocemu|1i2i3i4i|MuhammadZeeshanAshraf|shiblu001|goodfotos|fotostoday|iloveyouallhere|BigoGallery|Redditaccounts|odosta|ssrgupta|funngeeks|Virgo200|dailynewspaperpk|bellarocks1|inspiringfeed|SajidAliturri|MikeConnell|adam460|cr70100|janhanzab|geebrodo|fianacra|saba456|saluzia|meghissmeghiss|mikejohnsonsq|MyDogLikes|katrinasweety|heyshanug|AllTechAbout|walllo|celebritiesmania|mylocurtisgold|iwebAmazingThings|meelak007|Fashiontactics|WakasKhalid|Viralnewzz|snwz|wakaskhalid1989|mrandmrsjhoni|Zuqarnain|lorrainemcguire|9hues|IKNIAZI|JessicaCraz|Michelew|RajaArsalan|MuhmmadMughal|Diamondkickk|eyyina|VerlyMarket|thelolagemannu|prasad999|anon071|randomgibberishs|Jujubeanie646|coronalmassejections|PotatoesPotates|OsamaAhmad|bestclones|ansarig|wirlog|boyaji2426|Bilalahmed12|qasimali001|pinki22|moviesmag|MarquisDeSadeVIIl|Bilalahmed1996|khokonapon|naeemkkk|OksanaShevchenko|qureshi778|Imtiazkrk|WOWSOMEAPP|itsmegloria|ViralPlaces|porakopal5|noormohd405|albakistan|newmovies2k|emily008|ShareWorldOnline|yasirilyas33|adamminhas12|EspnLive|RisteJordanoski|RustamSatti|WaheedChohan|funworldimaginator|micalalex|reallove23|usman634|trendingnow|upers302|wallpaperhdpk|waseem42|syedasadsheeraz|phunkyp77|hammad4466|TheHappyHumans23456|AhmedSheno|DavidBrents|oaques|justin8b6cvw|socialispiice|ThugLifeMemes|azhar190|amerxp00|dhealthfitness|NabeelAlvi|Phenomenic|uslivestream|usmanali173|fashionfusion|nomantufail|juduma|jonnybagofdonuts|ladynik|mornabo|viraltodays|lovenest|jobhawks|shitMH|usm05|Mrimgurianz|Shezadadil|ShivKumar2312|com9000|Apnehd|70mmarena|SoniaKapoor007|Tehminasani|sachinyadav1|nevershutupnet|oicu|sandinglondoncoUK|piaskabir|iamtocute|RSamual|freeustad|bradpifffff|creedenz|lemonfridge|thursdaynightfootballlivejetsvspatriots|muneeb3372|tchapiiila|pontifex\d+|sidhu340|jawwadhussain|Apnehd|coolboyy1991|bloggingtrendz|Rakesh216|Newsbbc|smileyrose|GiftsFromMars|MuhammedUmar|gongobonk|nazranagul|gretai|rypa|DoctorsAdvice|ShorabShanto09|sheikhsherry|beautysomething|Recipesbar|anayat031|Robbasaurusrex|rachaelblake007|artcollections25|qptopm|YoussefHamdi|jams13242|jenniferstuart|AtaRehman|wittenvdp|alinaafoster|unikilarki|MohiniKumari|kzeerox|MichelleKeeganUK|relaxedpath|KkossAsa|ShyamOruganti|theUmarFarooq|tskdevelopers|alexryan360|DonaldTrumpPresident|CrazyThing|august04|Udaya12|sweettania|mariakhan384mz|zohaib615|ShahzaibAnwar|YousafBhutta|zola18|ACchannel|somewin|ACchannel|SoniaRizvi|Xainkungjee|chadin12|hajar74|DailyzFun|bhupifxartist|seoanubhavgarg|dailypakistani|andyben|powerforever|ritanmnews|bigggggy|SelfishJerry|sayhi0092|top10newvideo|tronghai175|mshoaib|artikelnummer|ParmjitSingh|WladimirKlitschkovsAlexLeapailivestreaming|SportsBait|RosalieOdell|chiaalain|samsmith2|ustype|rahulraj1989|mooolander|amy8861|farimalik822|SafeerWarraich|sfr99|niceseoguy|osarenomaofficial|matronson|stellavictoria|tufailahmad|Viralpediaorg|babyu59|fzy326|smoke4me|sadiakomal|TheodoreScott|ppushmeupp|FahadFahad0312)$/, "spam", "red"],
   [/WeirdFunny|XaleemIqbal|IndigoAditya|Goodboye|bellaluna|FS22|hila(rious)?gifs|AsadRehman|UmairTariq|umairkhan|umarnisar65|Taimoor03|GayishFields|silverscreen1|mansoor1223|buntybubbly|FamilyIsEverythings|OliverClothesoff70|zeevipcom/, "possible spam?", "yellow", "black"],
-  [/KAMRAN20896|AwaisRao|RizwanMukarram|chusman222|AenaThought|theasharali|cuteviki|ShafiqMughal|lolxpk|nomanramzan91|Abhinayaa|BigoGallery|gigiiiiiiiii|redditloverss|2cutemade|Polareddit|Funkylimp|siddasad|mohsinsidd|niceskill|john262|tonny48|ennadavid|alihere21|redrose465|SMLolzz|Binditori|UsmanIshaque|seenu123|raj4770|basha4Seo|ArslanHaider|ManzoorHussain|RockingRafiq|waqar|irfii|khawarhussain|AqEel79|EMTheads|AliShaikh1|nazima111|Saifuu|VivekBhardwaj|TheNightmarexD|WWEFightTime|emlyrose|ayyazkhan111|zeeshi005|WaqarVicky|Rossy777|MUhammadkashifHussain|saleena66|nadiagull|mazzsam|samsjeee|usamamaqbool|saharnewspk|nezamnur|nezamuddin|alltimehit|jenniferange326|smmostafiz|skaka090|dyes82826908|jhoncrray|Happynow778|sokalratre|catfunny|asharh60|UsmanJohn|Princes660|galive|AhsanAwan44|KhanFarooq1122|rottweiler90|masttoqeer|AliArshad367|shehrazali0344|FarhanAhmed|farukomar|JoyceRuiz|johnpetter00|getfunda|HammadKhalid1|sahilkhan6550|exceltera|malikazam03|maxe60700|uzikmi|sabbirkhan49|buchibaba|asad660|umar7320|mubi92|syedbahi|MuhammedUmar|waheedalam|clicktoseo|absayed00|Emaanali786|zain92|akakakak230|awww7|FaisalSharif|humaaahumaghumagh|s1234560|ShafqatKhan|ateeq2014|kashifmughal|shahzad755|Teebus|redditcool12|mmfaizan1|usmanobf|shah30202|Vieur|nancy101mama|iammht|hottufail|procasteenation|Haymi197|suvabrata4u|shitfacts|johny909|waviral|ChrisMorningStar|nurunnaharamily2|gkane839|deshku|gpmodem|irscia|paala1|CallieMarta|Nonyjan|AdeelSaqlain363|adiltahir353|RajkumarSoni|junaidsafdar93|engzain63|sbshoukat|sadaqatali581|mani5|gmmostofa|skywalkerlover|sajjadsgd|X4ce|salman033|saniaakram|khiladi007|YasirMehmood4200|arsalan5678|IndianTechHunter|Basitwahid|amyjasmin|aliashber|asadqamar|Hassanyousafi|ENTERTAINMENTFUN|AngelinaMKS|muhamadqasim76|AlimTasnim/, "account farmer content source", "red"],
+  [/KAMRAN20896|AwaisRao|RizwanMukarram|chusman222|AenaThought|theasharali|cuteviki|ShafiqMughal|lolxpk|nomanramzan91|Abhinayaa|gigiiiiiiiii|redditloverss|2cutemade|Polareddit|Funkylimp|siddasad|mohsinsidd|niceskill|john262|tonny48|ennadavid|alihere21|redrose465|SMLolzz|Binditori|UsmanIshaque|seenu123|raj4770|basha4Seo|ArslanHaider|ManzoorHussain|RockingRafiq|waqar|irfii|khawarhussain|AqEel79|EMTheads|AliShaikh1|nazima111|Saifuu|VivekBhardwaj|TheNightmarexD|WWEFightTime|emlyrose|ayyazkhan111|zeeshi005|WaqarVicky|Rossy777|MUhammadkashifHussain|saleena66|nadiagull|mazzsam|samsjeee|usamamaqbool|saharnewspk|nezamnur|nezamuddin|alltimehit|jenniferange326|smmostafiz|skaka090|dyes82826908|jhoncrray|Happynow778|sokalratre|catfunny|asharh60|UsmanJohn|Princes660|galive|AhsanAwan44|KhanFarooq1122|rottweiler90|masttoqeer|AliArshad367|shehrazali0344|FarhanAhmed|farukomar|JoyceRuiz|johnpetter00|getfunda|HammadKhalid1|sahilkhan6550|exceltera|malikazam03|maxe60700|uzikmi|sabbirkhan49|buchibaba|asad660|umar7320|mubi92|syedbahi|MuhammedUmar|waheedalam|clicktoseo|absayed00|Emaanali786|zain92|akakakak230|awww7|FaisalSharif|humaaahumaghumagh|s1234560|ShafqatKhan|ateeq2014|kashifmughal|shahzad755|Teebus|redditcool12|mmfaizan1|usmanobf|shah30202|Vieur|nancy101mama|iammht|hottufail|procasteenation|Haymi197|suvabrata4u|shitfacts|johny909|waviral|ChrisMorningStar|nurunnaharamily2|gkane839|deshku|gpmodem|irscia|paala1|CallieMarta|Nonyjan|AdeelSaqlain363|adiltahir353|RajkumarSoni|junaidsafdar93|engzain63|sbshoukat|sadaqatali581|mani5|gmmostofa|skywalkerlover|sajjadsgd|X4ce|salman033|saniaakram|khiladi007|YasirMehmood4200|arsalan5678|IndianTechHunter|Basitwahid|amyjasmin|aliashber|asadqamar|Hassanyousafi|ENTERTAINMENTFUN|AngelinaMKS|muhamadqasim76|AlimTasnim|mulla1111|karyn143|djrizzz88|rizztaxtic|raoo248|mubeenazam007|heraani|entertainmentmania|qasimranjha420|nasirkhan552|FahadMeo|MudassarAli5879|bhokersinghindiawale|coolusama|CourtneyJValencia|rodger1122|avneesh61|ramansidhu|abrehman786|MohitLatami|faisalmotan|bezroofmax|Princesnoor|recumbetntbike|funmaza004|rehmancoaching|juliarobart|viralthis|kohinoorprince|RODGERALLEN|worldsaeedkhan|sfsaifi|shafqatazeem|AishaClicker|ZainRiaz|BreakfastRecipes3786|jonh2016|extremegrowth|aliafzalbaloch|shehbazkhattaq|a00796|AzanAli75|At0ZWORlD|AnastasiyaLibra|WaqarQurashiQaisrani|Abdullahkhanimugr|nextdoorto|DanishAliKhan|shehbazkhan|malikwaheed1|NaeemNimi|babarmaqbool|nk934934|Afghannews|kashif88166|yasirali66|proscience|TopFootBallgoals|AsadIqbal786|HamzaShahid0313|imran11|marilouadeel|mallhi009|clicker0099|MaiHonHasan|KinGui|ArslanMunir987|dewanaho|rahul91star|TravelonBudget|ChristinaCPowers|dasjoydeb8|MuzammilHr/, "account farmer content source", "red"],
   [/^[A-Z]{11}$/, "random 11 char name, probable repost bot content source", "orange"],
   [/undercovergiraffe|SAFE4WORK|Datsun280zxt|LindaDee|thund3rbolt/, "frequent long GIFs", "orange"],
   [/lnfinity00/, "vegan spam", "orange"],
@@ -148,7 +148,7 @@ function dateDiff(diff)
 
 function processImgurInfo(link, match, data)
 {
-  var id = match[2]
+  var id = match[2];
   var isGallery = data.score != null;
   var author = data.account_url || (isGallery ? "(auto)" : null);
   if (data.images)
@@ -242,7 +242,7 @@ function showImgurInfo(link, match, animated, isGallery, isAlbum, author, width,
     infoContent += "<span class=\"pretty-button\" style=\"background-color: orange; color: white;\" title=\"link uses an imgur suffix that loads a smaller version and will break animated images" + match[3] + "\">thumbnail format</span>";
   $(infoContent).insertAfter($(link).parents(".title"));
   //if (/\/(gallery|t(opic)?)\//i.test(href) || ((/\.com\/.+\.(?!(gifv?$))/i.test(href) || /\.com\/[\d\w]{7,8}(?=[^\d\w]|$)/i.test(href)) && animated) || /\.com\/a\//i.test(href))
-  addExpando(entry, entry.find(".imageInfo"), animated, isAlbum, false, id, "https://i.imgur.com/" + id + ".jpg", null, "https://i.imgur.com/" + id + ".mp4")
+  addExpando(entry, entry.find(".imageInfo"), animated, isAlbum, false, id, "https://i.imgur.com/" + id + ".jpg", null, "https://i.imgur.com/" + id + ".mp4");
 }
 
 function addExpando(entry, positionElement, video, album, iframe, imgurAlbumId, imgSrc, webmSrc, mp4Src, iframeSrc)
@@ -375,7 +375,7 @@ function gfyFetch()
   var button = $(this);
   var entry = button.parents(".entry");
   var link = entry.find("a.title");
-  button.text("fetching...")
+  button.text("fetching...");
   $.ajax({
     url: "https://upload.gfycat.com/transcodeRelease?fetchUrl=" + encodeURIComponent($(link).attr("href")),
     success: function(data, textStatus, request)
@@ -400,7 +400,7 @@ function gfyFetch()
             $(this).text("viewing original link").attr("title", "click to view gfy link");
           }
         });
-        addExpando(entry, button, true, false, false, null, null, response.webmUrl.replace("http:", "https:"), response.mp4Url.replace("http:", "https:"))
+        addExpando(entry, button, true, false, false, null, null, response.webmUrl.replace("http:", "https:"), response.mp4Url.replace("http:", "https:"));
       }
       else
         button.text(response.isOk ? "gfy request started" : response.error);
@@ -517,8 +517,8 @@ function checkLink()
                 error: function(request, textStatus, error)
                 {
                   entry.find(".imageInfoRetry").remove();
-                  var resp = request.responseText != "" ? null : JSON.parse(request.responseText);
-                  $("<a class=\"pretty-button imageInfoRetry\" style=\"background-color: grey; color: white; cursor: pointer;\" title=\"click to retry\">" + resp != null && resp.data && resp.data.error ? resp.data.error : error + "</a>").insertAfter($(link).parents(".title"));
+                  var resp = request.responseText == "" ? null : JSON.parse(request.responseText);
+                  $("<a class=\"pretty-button imageInfoRetry\" style=\"background-color: grey; color: white; cursor: pointer;\" title=\"click to retry\">" + (resp != null && resp.data && resp.data.error ? resp.data.error : error) + "</a>").insertAfter($(link).parents(".title"));
                   entry.find(".imageInfoRetry").click(function() { $(this).text("Retrying..."); $(this).parents(".entry").find("a.title").each(checkLink); });
                 }
               });
@@ -526,8 +526,8 @@ function checkLink()
             {
               try {
                   entry.find(".imageInfoRetry").remove();
-                  var resp = request.responseText != "" ? null : JSON.parse(request.responseText);
-                  $("<a class=\"pretty-button imageInfoRetry\" style=\"background-color: grey; color: white; cursor: pointer;\" title=\"click to retry\">" + resp != null && resp.data && resp.data.error ? resp.data.error : error + "</a>").insertAfter($(link).parents(".title"));
+                  var resp = request.responseText == "" ? null : JSON.parse(request.responseText);
+                  $("<a class=\"pretty-button imageInfoRetry\" style=\"background-color: grey; color: white; cursor: pointer;\" title=\"click to retry\">" + (resp != null && resp.data && resp.data.error ? resp.data.error : error) + "</a>").insertAfter($(link).parents(".title"));
                   entry.find(".imageInfoRetry").click(function() { $(this).text("Retrying..."); $(this).parents(".entry").find("a.title").each(checkLink); });
               }
               catch (e)
@@ -623,6 +623,29 @@ window.setTimeout(function()
   });
 }, 2500);
 
+function checkComments(comment, imgurComments, depth)
+{
+  var commentText = comment.text().replace(/\W/g, "");
+  if (commentText.length > 5 && commentText != "[deleted]")
+  {
+    for (var i = 0; i < imgurComments.length; i++)
+    {
+      var imgurCommentStripped = imgurComments[i].comment.replace(/\W/g, "");
+      if (commentText == imgurCommentStripped || commentText == imgurCommentStripped.replace(/imgur(?!\.com)/g, "reddit"))
+      {
+        var diff = new Date(comment.parents(".entry").find("time").attr("datetime")).getTime() - imgurComments[i].datetime * 1000;
+        if (diff > 0)
+        {
+          var imgurUrl = "https://imgur.com/gallery/" + imgurComments[i].image_id + "/comment/" + imgurComments[i].id + (depth > 0 ? "/" + depth : "");
+          $("<a class=\"pretty-button\" style=\"background-color: red; color: white; \" href=\"" + imgurUrl + "\" title=\"" + dateDiff(diff) + "\">imgur comment repost (" + (comment.text() == imgurComments[i].comment ? "exact" : "fuzzy") + ") </a><a class=\"pretty-button imageInfoCommentReport\" style=\"background-color: red; color: white; cursor: pointer;\" onclick=\"var entry = $(this).parents('.entry'); entry.find('a.reportbtn').click(); entry.find('input[value=other]').click(); entry.find('input[name=other_reason]').val('repost bot - " + imgurUrl + "'); entry.find('.submit-action-thing').click();\">Report</a>").insertAfter(comment);
+        }
+      }
+      if (!checkTopLevelCommentsOnly)
+        checkComments(comment, imgurComments[i].children, depth + 1);
+    }
+  }
+}
+
 // Imgur comment repost detection
 if (highlightImgurCommentReposts && /\/comments\//i.test(window.location.href))
 {
@@ -634,28 +657,6 @@ if (highlightImgurCommentReposts && /\/comments\//i.test(window.location.href))
     {
       savedValue = JSON.parse(savedValue);
       var isAlbum = savedValue[3];
-      function checkComments(comment, imgurComments, depth)
-      {
-        var commentText = comment.text().replace(/\W/g, "");
-        if (commentText.length > 5 && commentText != "[deleted]")
-        {
-          for (var i = 0; i < imgurComments.length; i++)
-          {
-            var imgurCommentStripped = imgurComments[i].comment.replace(/\W/g, "");
-            if (commentText == imgurCommentStripped || commentText == imgurCommentStripped.replace(/imgur(?!\.com)/g, "reddit"))
-            {
-              var diff = new Date(comment.parents(".entry").find("time").attr("datetime")).getTime() - imgurComments[i].datetime * 1000;
-              if (diff > 0)
-              {
-                var imgurUrl = "https://imgur.com/gallery/" + imgurComments[i].image_id + "/comment/" + imgurComments[i].id + (depth > 0 ? "/" + depth : "");
-                $("<a class=\"pretty-button\" style=\"background-color: red; color: white; \" href=\"" + imgurUrl + "\" title=\"" + dateDiff(diff) + "\">imgur comment repost (" + (comment.text() == imgurComments[i].comment ? "exact" : "fuzzy") + ") </a><a class=\"pretty-button imageInfoCommentReport\" style=\"background-color: red; color: white; cursor: pointer;\" onclick=\"var entry = $(this).parents('.entry'); entry.find('a.reportbtn').click(); entry.find('input[value=other]').click(); entry.find('input[name=other_reason]').val('repost bot - " + imgurUrl + "'); entry.find('.submit-action-thing').click();\">Report</a>").insertAfter(comment);
-              }
-            }
-            if (!checkTopLevelCommentsOnly)
-              checkComments(comment, imgurComments[i].children, depth + 1);
-          }
-        }
-      }
       $.ajax({
         url: "https://api.imgur.com/3/gallery/" + (isAlbum ? "album" : "image" ) + "/" + match[2] + "/comments/",
         headers: {"Authorization": "Client-ID " + clientId},
