@@ -1288,10 +1288,9 @@ function main()
                 if (match)
                 {
                   var infoContent = "<span class=\"imageInfo\"></span>";
-                  console.log(match);
                   $(infoContent).insertAfter(link.parents(".title"));
-                  addExpando(entry, entry.find(".imageInfo"), false, false, null, null, href, href.match(/\.(webm|mp4|ogg)((\?|#).+)?$/i) ? href : null);
-                  if (settings.highlightAnimated && href.match(/\.(gif|webm|mp4|ogg)((\?|#).+)?$/i))
+                  addExpando(entry, entry.find(".imageInfo"), false, false, null, null, href, match[2].match(/(webm|mp4|ogg)/i) ? href : null);
+                  if (settings.highlightAnimated && match[2].match(/(gif|webm|mp4|ogg)/i))
                     highlightLink(link, linkColor(href));
                 }
               }
