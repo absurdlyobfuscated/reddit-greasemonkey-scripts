@@ -11,10 +11,12 @@
 // @grant       GM_deleteValue
 // ==/UserScript==
 
-$("body").append($("<div class=\"imageInfoNotification imageInfoButton\" style=\"position: absolute; z-index: 100; top: 30px; right: 10px; padding: 20px; font-size: small; background-color: #EFF7FF; display: inline-block; border: 1px solid #666; border-radius: 3px; width: 400px;\"><b>reddit image info</b><div class=\"imageInfoNotificationClose\" style=\"display: inline-block; border: 1px solid #666; padding: 1px 6px; border-radius: 3px; font-size: x-small; float: right; cursor: pointer;\">X</div><div>" + ($(".imageInfoSettingsButton").length > 0 ? "You have the old version of this script installed alongside the new one. Please uninstall reddit image info 1.1.3.3" : "A new version of this script is available. It requires that you remove your current version and install the new one here: <a href=\"https://absurdlyobfuscated.com/reddit/\">https://absurdlyobfuscated.com/reddit/</a>.<br/><br/>New features:<ul style=\"list-style: inside;\"><li>User interface for settings</li><li>Many new options for highlighting</li><li>More info shown for imgur, gfycat, and giphy</li><li>Sli.mg support</li><li>Comment repost detection improved, status shown and option to recheck after loading more comments</li><li>Lots of caching and performance improvements</li></ul>") + "</div></div>"));
-$(".imageInfoNotificationClose").click(function() {
-  $(".imageInfoNotification").remove();
-});
+window.setTimeout(function() {
+  $("body").append($("<div class=\"imageInfoNotification imageInfoButton\" style=\"position: absolute; z-index: 100; top: 30px; right: 10px; padding: 20px; font-size: small; background-color: #EFF7FF; display: inline-block; border: 1px solid #666; border-radius: 3px; width: 400px;\"><b>reddit image info</b><div class=\"imageInfoNotificationClose\" style=\"display: inline-block; border: 1px solid #666; padding: 1px 6px; border-radius: 3px; font-size: x-small; float: right; cursor: pointer;\">X</div><div>" + ($(".imageInfoSettingsButton").length > 0 ? "You have the old version of this script installed alongside the new one. Please uninstall reddit image info 1.1.3.3" : "A new version of this script is available. It requires that you remove your current version and install the new one here: <a href=\"https://absurdlyobfuscated.com/reddit/\">https://absurdlyobfuscated.com/reddit/</a>.<br/><br/>New features:<ul style=\"list-style: inside;\"><li>User interface for settings</li><li>Many new options for highlighting</li><li>More info shown for imgur, gfycat, and giphy</li><li>Sli.mg support</li><li>Comment repost detection improved, status shown and option to recheck after loading more comments</li><li>Lots of caching and performance improvements</li></ul>") + "</div></div>"));
+  $(".imageInfoNotificationClose").click(function() {
+    $(".imageInfoNotification").remove();
+  });
+}, 1000);
 
 // An imgur api client ID can be acquired by registering an imgur app here: https://api.imgur.com/oauth2/addclient
 var clientId = "2eb3b0a17b566b2";
