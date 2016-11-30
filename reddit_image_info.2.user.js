@@ -5,7 +5,7 @@
 // @include     https://*.reddit.com/*
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js
 // @require     https://github.com/EastDesire/jscolor/raw/master/jscolor.min.js
-// @version     2.0.1.0
+// @version     2.1.1.0
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_listValues
@@ -77,14 +77,16 @@ function main()
     ".imageInfoGreyButton { background-color: grey; color: white; }\n" +
     ".imageInfoComment { display: inline-block; width: 24px; height: 15px; }\n" +
     ".imageInfoCommentInline { display: inline; }\n" +
-    ".imageInfoComment .imageInfo { display: none; position: absolute; margin-left: 26px; }\n" +
+    ".imageInfoCommentInlineExpando { display: inline-block; width: 24px; height: 15px; }\n" +
+    ".imageInfoComment .imageInfo { display: none; position: absolute; margin-left: 2px; }\n" +
     ".imageInfoComment .imageInfo, .imageInfoCommentInline .imageInfo { background: white; border: 1px solid #eee; border-radius: 3px; padding: 3px; line-height: 16px; }\n" +
-    ".imageInfoComment .imageInfoExpando, .imageInfoCommentInline .imageInfoExpando { position: absolute; margin: 0 2px; }\n" +
+    ".imageInfoComment .imageInfoExpando { position: absolute; margin: 0 2px; }\n" +
+    ".imageInfoCommentInline .imageInfoExpando { margin: 0; }\n" +
     ".imageInfoCommentInline .imageInfoExpando, .imageInfoComment:hover, .imageInfoComment:hover .imageInfo, .imageInfoCommentInline .imageInfo { display: inline-block; }\n"
   );
 
   var settingMetaData = {
-    version: 2.1,
+    version: 2.11,
     type: "object",
     children: {
       groupTags: { name: "Tags", type: "group", children: {
@@ -330,7 +332,7 @@ function main()
   function getDefaultSettings(metaData, currentSetting)
   {
     var defaultValue = typeof currentSetting == "undefined" ? metaData.defaultValue : currentSetting;
-    var hasDefaultValue = typeof defaultValue != "undefined";
+    var hasDefaultValue = typeof defaultValue != "undefined" && defaultValue !== null;
     if (metaData.type == "array")
     {
       var newSettingArray = [];
@@ -936,7 +938,7 @@ function main()
       infoHtmlItems.push(titleHtml);
     var infoHtml = "<div class=\"imageInfo\">" + infoHtmlItems.join(", ") + "</div>";
     if (positionElement.attr("href"))
-      infoHtml = "<div class=\"" + (settings.commentMediaInfoInline ? "imageInfoCommentInline" : "imageInfoComment") + "\">" + infoHtml  + "</div>";
+      infoHtml = "<div class=\"" + (settings.commentMediaInfoInline ? "imageInfoCommentInline" : "imageInfoComment") + "\"><div class=\"imageInfoCommentInlineExpando\"></div>" + infoHtml  + "</div>";
     positionElement.parent().find(".imageInfoRetry").remove();
     return $(infoHtml).insertAfter(positionElement);
   }
@@ -1281,12 +1283,12 @@ function main()
   {
     if (!album && !settings.addExpandos || album && !settings.addAlbumExpandos)
       return;
-    var commentImageInfoElement = positionElement.hasClass("imageInfoComment") || positionElement.hasClass("imageInfoCommentInline") ? positionElement.find(".imageInfo") : null;
+    var commentImageInfoElement = positionElement.hasClass("imageInfoComment") || positionElement.hasClass("imageInfoCommentInline") ? positionElement.find(".imageInfoCommentInlineExpando") : null;
     var expando = $("<a class=\"imageInfoExpando imageInfoExpandoCollapsed imageInfoSprite imageInfoLink\"></a>");
     var expandoContent = $("<div class=\"imageInfoExpandoContent\"><div class=\"imageInfoExpandoMsg\">...</div></div>");
     if (commentImageInfoElement)
     {
-      expando.insertBefore(commentImageInfoElement);
+      commentImageInfoElement.append(expando);
       expandoContent.insertAfter(positionElement);
     }
     else
@@ -2185,6 +2187,8 @@ function main()
     $(".imageInfoExpando").remove();
     $(".imageInfoExpandoContent").remove();
     $(".imageInfoTitleDuration").remove();
+    $(".imageInfoComment").remove();
+    $(".imageInfoCommentInline").remove();
     $(".imageInfoCommentRepost").remove();
     $(".imageInfoCommentReport").remove();
     $(".imageInfoGfyLink").remove();
