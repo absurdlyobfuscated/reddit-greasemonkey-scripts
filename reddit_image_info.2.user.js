@@ -5,7 +5,7 @@
 // @include     https://*.reddit.com/*
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js
 // @require     https://github.com/EastDesire/jscolor/raw/master/jscolor.min.js
-// @version     2.1.1.0
+// @version     2.1.2.0
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_listValues
@@ -55,7 +55,6 @@ function main()
     ".imageInfoExpandoContent { display: none; max-width: 100%; min-height: 30px; margin: 0 4px 2px 0; }\n" +
     ".imageInfoExpandoMsg { position: absolute; width: 100%; }\n" +
     ".imageInfoExpandoError { position: absolute; }\n" +
-    ".imageInfoAlbumHeader {  }\n" +
     ".imageInfoAlbumControls, .imageInfoAlbumTitle { display: inline; }\n" +
     ".imageInfoAlbumTitle, .imageInfoAlbumImageCount { font-weight: bold; }\n" +
     ".imageInfoAlbumTitle { margin-left: 8px; }\n" +
@@ -86,7 +85,7 @@ function main()
   );
 
   var settingMetaData = {
-    version: 2.11,
+    version: 2.12,
     type: "object",
     children: {
       groupTags: { name: "Tags", type: "group", children: {
@@ -128,7 +127,8 @@ function main()
         addExpandos: { name: "Add single media item expandos/media info?", type: "boolean", defaultValue: true },
         addAlbumExpandos: { name: "Add album expandos/media info?", type: "boolean", defaultValue: true },
         addCommentExpandos: { name: "Add comment expandos/media info?", type: "boolean", defaultValue: true },
-        commentMediaInfoInline: { name: "Show comment media info inline?", type: "boolean", defaultValue: false, tooltip: "If not enabled, comment media info is shown when hovering over the expando." },
+        addMessageExpandos: { name: "Add modmail and message expandos/media info?", type: "boolean", defaultValue: true },
+        commentMediaInfoInline: { name: "Show comment/message media info inline?", type: "boolean", defaultValue: false, tooltip: "If not enabled, comment/message/modmail media info is shown when hovering over the expando." },
         removeNativeExpandos: { name: "Remove native expandos?", type: "boolean", defaultValue: false, tooltip: "Remove reddit's (slow, low quality) native expandos that load media from redditmedia or embed.ly whenever a replacement expando and media info is available for a link." },
         forceHttps: { name: "Always use HTTPS?", type: "boolean", defaultValue: false, tooltip: "Replace insecure expando links with secure HTTPS links. This will cause problems for sites that don't support secure connections." },
         muteVideo: { name: "Mute expando videos by default?", type: "boolean", defaultValue: true },
@@ -318,10 +318,19 @@ function main()
     }
   }
 
-  function handleError(error)
+  function handleError(error, errorElement)
   {
     console.log("reddit image info error: " + error.message);
-    var errorText = "    " + error.message;
+    var errorText = "    Page: " + window.location.pathname;
+    try
+    {
+      if (errorElement && errorElement.jquery)
+        errorText += "\n    Element " + errorElement.parents(".thing").attr("id");
+    }
+    catch (err)
+    {
+    }
+    errorText += "\n    " + error.message;
     if (error.stack)
       errorText += "\n    " + error.stack.replace(/\n(?=.+)/g, "\n    ").replace(/file:\/.+\//g, "");
     var lastError = { errorTime: Date.now(), errorText: errorText };
@@ -348,6 +357,8 @@ function main()
         var childMetaData = metaData.children[childSetting];
         if (childMetaData.type == "group")
         {
+          if (hasDefaultValue)
+            newSettingObject[childSetting] = defaultValue[childSetting];
           for (var groupChildSetting in childMetaData.children)
             newSettingObject[groupChildSetting] = getDefaultSettings(childMetaData.children[groupChildSetting], hasDefaultValue ? defaultValue[groupChildSetting] : undefined);
         }
@@ -860,20 +871,21 @@ function main()
       tagItems.push("<a href=\"" + mediaInfo.source + "\">source</a>");
     if (tagItems.length > 0)
       infoHtmlItems.push(tagItems.join(" "));
-    var mediaInfoHtml = "";
+    var mediaInfoHtml = "<div class=\"imageInfoDuration\">";
     if (mediaInfo.animated)
-      mediaInfoHtml += "<div class=\"imageInfoDuration\">" + getDurationHtml(mediaInfo.duration, mediaInfo.minDuration, mediaInfo.maxDuration) + "</div>";
+      mediaInfoHtml += getDurationHtml(mediaInfo.duration, mediaInfo.minDuration, mediaInfo.maxDuration);
+    mediaInfoHtml += "</div><div class=\"imageInfoFrameRate\"";
     if (mediaInfo.frameRate || mediaInfo.gifFrames || mediaInfo.videoFrames || mediaInfo.animated)
     {
-      mediaInfoHtml += "<div class=\"imageInfoFrameRate\"";
       if (mediaInfo.frameRate)
         mediaInfoHtml += "data-frame-rate=\"" + mediaInfo.frameRate + "\"";
       if (mediaInfo.gifFrames)
         mediaInfoHtml += "data-gif-frames=\"" + mediaInfo.gifFrames + "\"";
       if (mediaInfo.videoFrames)
         mediaInfoHtml += "data-video-frames=\"" + mediaInfo.videoFrames + "\"";
-      mediaInfoHtml += ">" + getFrameRateHtml(null, null, mediaInfo.frameRate, mediaInfo.videoFrames, mediaInfo.gifFrames, mediaInfo.duration) + "</div>";
+      mediaInfoHtml += ">" + getFrameRateHtml(null, null, mediaInfo.frameRate, mediaInfo.videoFrames, mediaInfo.gifFrames, mediaInfo.duration);
     }
+    mediaInfoHtml += "</div>";
     if (mediaInfo.width && mediaInfo.height)
       mediaInfoHtml += getDimensionsHtml(mediaInfo.width, mediaInfo.height);
     else if (!mediaInfo.albumImageCount)
@@ -1055,7 +1067,7 @@ function main()
 
   function attachExpandoEvents(entry, expando, expandoContent, isAlbum, imgSrc)
   {
-    var parentElement = (isAlbum ? expandoContent : expando.parent());
+    var parentElement = (isAlbum ? expandoContent : expando.parent().parent());
     var videoElement = expandoContent.find(".imageInfoExpandoVideo");
     videoElement.on("error", function(eventObject) {
       expandoContent.find(".imageInfoExpandoMsg").html("<div class=\"imageInfoExpandoError\">Error loading video</div>").show();
@@ -2015,7 +2027,7 @@ function main()
     }
     catch (error)
     {
-      handleError(error);
+      handleError(error, link);
       processNextLink();
     }
   }
@@ -2071,7 +2083,14 @@ function main()
     $("div.menuarea").append($("<a class=\"imgurCommentCheck imageInfoGreyButton imageInfoButton imageInfoLink\">checking for imgur comment reposts...</a>"));
     var commentReposts = 0;
     $(".entry .usertext-body").each(function() {
-      commentReposts += checkComment($(this), imgurComments, 0);
+      try
+      {
+        commentReposts += checkComment($(this), imgurComments, 0);
+      }
+      catch (error)
+      {
+        handleError(error, $(this));
+      }
     });
     $(".imgurCommentCheck").hide(100).remove();
     $("div.menuarea").append($("<a class=\"imgurCommentCheckResults imageInfoButton" + (commentReposts > 0 ? " imageInfoRedButton" : " imageInfoGreyButton") + " imageInfoLink\" title=\"Click to recheck\">imgur comment reposts: " + commentReposts + "</a>"));
@@ -2089,41 +2108,34 @@ function main()
 
   function loadComments(mediaTag)
   {
-    try
+    if (!settings.imgurClientId)
+      showNotification("Imgur client ID required. Set one in the reddit image info options.", 5000);
+    else
     {
-      if (!settings.imgurClientId)
-        showNotification("Imgur client ID required. Set one in the reddit image info options.", 5000);
-      else
-      {
-        $("div.menuarea").append($("<a class=\"imgurCommentCheck imageInfoButton imageInfoGreyButton imageInfoLink\">loading imgur comments...</a>"));
-        $.ajax({
-          url: "https://api.imgur.com/3/gallery/" + mediaTag + "/comments/",
-          headers: { Authorization: "Client-ID " + settings.imgurClientId },
-          success: function(imgurData) {
-            var imgurComments = imgurData.data;
-            checkAllComments(imgurComments, mediaTag);
-            cacheData(mediaTag + "-c", imgurComments, settings.imgurCommentsCacheTime);
-            $(".imgurCommentCheck").remove();
-          },
-          error: function(request, status, error) {
-            $(".imgurCommentCheck").remove();
-            $("div.menuarea").append($("<a class=\"imgurCommentCheckResults imageInfoButton imageInfoOrangeButton imageInfoLink\" title=\"Click to recheck\">" + (error == "Bad Request" ? "not in imgur gallery" : "error loading imgur comments: " + error) + "</a>"));
-            $(".imgurCommentCheckResults").click(function() {
-              $(".imgurCommentCheckResults").remove();
-              $(".imageInfoCommentRepost").remove();
-              var cachedData = getCachedData(mediaTag + "-c");
-              if (cachedData)
-                checkAllComments(cachedData, mediaTag);
-              else
-                loadComments(mediaTag);
-            });
-          }
-        });
-      }
-    }
-    catch (error)
-    {
-      handleError(error);
+      $("div.menuarea").append($("<a class=\"imgurCommentCheck imageInfoButton imageInfoGreyButton imageInfoLink\">loading imgur comments...</a>"));
+      $.ajax({
+        url: "https://api.imgur.com/3/gallery/" + mediaTag + "/comments/",
+        headers: { Authorization: "Client-ID " + settings.imgurClientId },
+        success: function(imgurData) {
+          var imgurComments = imgurData.data;
+          checkAllComments(imgurComments, mediaTag);
+          cacheData(mediaTag + "-c", imgurComments, settings.imgurCommentsCacheTime);
+          $(".imgurCommentCheck").remove();
+        },
+        error: function(request, status, error) {
+          $(".imgurCommentCheck").remove();
+          $("div.menuarea").append($("<a class=\"imgurCommentCheckResults imageInfoButton imageInfoOrangeButton imageInfoLink\" title=\"Click to recheck\">" + (error == "Bad Request" ? "not in imgur gallery" : "error loading imgur comments: " + error) + "</a>"));
+          $(".imgurCommentCheckResults").click(function() {
+            $(".imgurCommentCheckResults").remove();
+            $(".imageInfoCommentRepost").remove();
+            var cachedData = getCachedData(mediaTag + "-c");
+            if (cachedData)
+              checkAllComments(cachedData, mediaTag);
+            else
+              loadComments(mediaTag);
+          });
+        }
+      });
     }
   }
 
@@ -2321,6 +2333,8 @@ function main()
         }
       });
     }
+    if (settings.addMessageExpandos)
+      currentLinkList = currentLinkList.add($(".thing.message .md-container a"));
     processLinks();
 
     // Comment reposts
@@ -2352,7 +2366,14 @@ function main()
     }
   }
 
-  init();
+  try
+  {
+    init();
+  }
+  catch (error)
+  {
+    handleError(error);
+  }
 }
 
 window.setTimeout(main, 10);
