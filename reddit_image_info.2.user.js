@@ -5,7 +5,7 @@
 // @include     https://*.reddit.com/*
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js
 // @require     https://github.com/EastDesire/jscolor/raw/master/jscolor.min.js
-// @version     2.1.2.0
+// @version     2.2.0.0
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_listValues
@@ -48,6 +48,7 @@ function main()
     ".imageInfoSettingsTagDataInfo div, .imageInfoSettingsTagDataUpdate { font-size: xx-small; color: grey; display: inline; }\n" +
     ".imageInfoFeedback { float: right; }\n" +
     ".imageInfo, .imageInfo div { font-size: x-small; display: inline; }\n" +
+    ".imageInfoDesc { line-height: 15px; background-color: white; border: white; }\n" +
     ".imageInfoExpando { float: left; width: 24px; height: 24px; margin: 2px 5px 2px 0px; background-position: -116px -1406px; }\n" +
     ".imageInfoExpando:hover { background-position: -87px -1406px; }\n" +
     ".imageInfoExpandoExpanded { background-position: -29px -1435px; }\n" +
@@ -55,7 +56,7 @@ function main()
     ".imageInfoExpandoContent { display: none; max-width: 100%; min-height: 30px; margin: 0 4px 2px 0; }\n" +
     ".imageInfoExpandoMsg { position: absolute; width: 100%; }\n" +
     ".imageInfoExpandoError { position: absolute; }\n" +
-    ".imageInfoAlbumControls, .imageInfoAlbumTitle { display: inline; }\n" +
+    ".imageInfoAlbumControls, .imageInfoAlbumTitle, .imageInfoAlbumTitle div { display: inline; }\n" +
     ".imageInfoAlbumTitle, .imageInfoAlbumImageCount { font-weight: bold; }\n" +
     ".imageInfoAlbumTitle { margin-left: 8px; }\n" +
     ".imageInfoAlbumLeft, .imageInfoAlbumRight { display: inline; background-color: white; padding-right: 8px; }\n" +
@@ -85,7 +86,7 @@ function main()
   );
 
   var settingMetaData = {
-    version: 2.12,
+    version: 2.2,
     type: "object",
     children: {
       groupTags: { name: "Tags", type: "group", children: {
@@ -132,7 +133,7 @@ function main()
         removeNativeExpandos: { name: "Remove native expandos?", type: "boolean", defaultValue: false, tooltip: "Remove reddit's (slow, low quality) native expandos that load media from redditmedia or embed.ly whenever a replacement expando and media info is available for a link." },
         forceHttps: { name: "Always use HTTPS?", type: "boolean", defaultValue: false, tooltip: "Replace insecure expando links with secure HTTPS links. This will cause problems for sites that don't support secure connections." },
         muteVideo: { name: "Mute expando videos by default?", type: "boolean", defaultValue: true },
-        loadReducedImgur: { name: "Load reduced size version of imgur images?", type: "boolean", defaultValue: true, tooltip: "Subsitute a max 1024x1024 image when original image is higher resolution. Makes images load faster at the expense of a potential resolution loss for some images." },
+        loadReducedImgur: { name: "Load reduced size version of imgur images?", type: "boolean", defaultValue: true, tooltip: "Substitute a max 1024x1024 image when original image is higher resolution. Makes images load faster at the expense of a potential resolution loss for some images." },
         //expandOnHover: { name: "Expand on hover?", type: "boolean", defaultValue: false, tooltip: "Expand when hovering mouse over expandos. Clicking the expando will keep it open." },
         expandoRememberPlace: { name: "Resume after re-opening expando?", type: "boolean", defaultValue: true, tooltip: "After closing and re-opening a video or album expando, go to the previous time or album image." },
         expandoMaxHeight: { name: "Max expando image/video height (pixels)", type: "number", defaultValue: 1000, tooltip: "Images and videos taller than this will be resized to fit. Zero for no maximum. Note that very wide images/videos are still resized to fit the page/comment width." },
@@ -197,6 +198,7 @@ function main()
         sameAuthorTextColor: { name: "Same author text color", type: "color", defaultValue: "ffffff" }
       }},
       groupGallery: { name: "Imgur Gallery", type: "group", children: {
+        loadImgurGalleryInfo: { name: "Load imgur gallery info?", type: "boolean", defaultValue: false, tooltip: "When an imgur image or album is in the public gallery, load extra details like score and comment count." },
         highlightGalleryReposts: { name: "Highlight gallery reposts?", type: "boolean", defaultValue: true, tooltip: "Highlight when a reddit post is a repost of an imgur gallery post automatically created by a different reddit post." },
         galleryRepostTimeDiff: { name: "Gallery repost time difference (minutes)", type: "number", defaultValue: 20, tooltip: "Difference between reddit post time and the time an automatic imgur gallery post was created. Gallery creation time does not necessarily reflect image upload or album creation time." },
         galleryRepostColor: { name: "Gallery repost highlight color", type: "color", defaultValue: "ffa500" },
@@ -229,7 +231,7 @@ function main()
         autoConvertGfy: { name: "Automatically convert GIFs to gfycats?", type: "boolean", defaultValue: false, tooltip: "Automatically convert GIFs on page load, or retrieve info for an existing gfy transcode if one exists. If not enabled, the gfy button will allow you to convert to gfy manually." }
       }},
       groupAdvanced: { name: "Advanced", type: "group", collapsedByDefault: true, children: {
-        imgurClientId: { name: "Imgur API client ID", type: "string", defaultValue: "2eb3b0a17b566b2", desc: "Client ID used to retrieve imgur info. Get one by registering an imgur app here: <a href=\"https://api.imgur.com/oauth2/addclient\">https://api.imgur.com/oauth2/addclient</a>." },
+        imgurClientId: { name: "Imgur API client ID", type: "string", defaultValue: "1d8d9b36339e0e2", desc: "Client ID used to retrieve imgur info. Get one by registering an imgur app here: <a href=\"https://api.imgur.com/oauth2/addclient\">https://api.imgur.com/oauth2/addclient</a>." },
         slimgClientId: { name: "Sli.mg API client ID", type: "string", defaultValue: "", desc: "Client ID used to retrieve sli.mg info. See <a href=\"https://sli.mg/public/api\">https://sli.mg/public/api</a>." },
         // gfycatClientId: { name: "Gfycat API client ID", type: "string", defaultValue: "", desc: "Client ID used with gfycat client secret to convert GIFs to gfycats. See <a href=\"https://developers.gfycat.com/api/#authentication\">https://developers.gfycat.com/api/#authentication</a>." },
         // gfycatClientSecret: { name: "Gfycat API client secret", type: "string", defaultValue: "" },
@@ -252,12 +254,13 @@ function main()
   var tagDataUpdateTime;
   var currentExpandoList;
   var currentLinkList;
+  var mediaTags;
   var descriptionHighlight;
   var selfPostInterval = {};
   var frameRateInterval = {};
   // https://gist.github.com/dperini/729294#file-regex-weburl-js
   var urlRegex = "(?:(?:https?|ftp):\\/\\/)(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\s*\\.\\s*\\d{1,3}){3})(?!(?:169\\s*\\.\\s*254|192\\s*\\.\\s*168)(?:\\s*\\.\\s*\\d{1,3}){2})(?!172\\s*\\.\\s*(?:1[6-9]|2\\d|3[0-1])(?:\\s*\\.\\s*\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\s*\\.\\s*(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\s*\\.\\s*(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\s*\\.\\s*(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\s*\\.\\s*(?:[a-z\\u00a1-\\uffff]{2,}))\\.?)(?::\\d{2,5})?(?:[/?#]\\S*)?";
-  var imgurIdRegex = /imgur\.com\/+(?:(gallery|a|r\/\w+|t(?:opic)?\/\w+|share\/i)\/)?([\d\w]{5}|[\d\w]{7})([sbtmlh])?(\.(?=.+)|[^\d\w]|$)/i;
+  var imgurIdRegex = /imgur\.com\/+(?:(gallery|a|r\/\w+|t(?:opic)?\/\w+|share\/i)\/)?([\d\w]{5}|[\d\w]{7})([sbtmlgh])?(\.(?=.+)|[^\d\w]|$)/i;
 
   function cacheData(cacheId, dataObject, cacheTimeMinutes)
   {
@@ -443,10 +446,10 @@ function main()
         settingsHtml += "\" id=\"" + setting + "\">";
         for (var i = 0; i < settingValue.length; i++)
           settingsHtml += arrayItemHtml(setting + "_" + i, metaData.arrayItem, settingValue[i], setting, events, metaData.arrayItemName);
-        settingsHtml += "</div><div class=\"imageInfoSettingArrayAdd imageInfoSprite imageInfoLink\" id=\"imageInfoSettingArrayAdd" + setting + "\" title=\"Add new " + metaData.arrayItemName + "\" />";
+        settingsHtml += "</div><div class=\"imageInfoSettingArrayAdd imageInfoSprite imageInfoLink\" id=\"imageInfoSettingArrayAdd_" + setting + "\" title=\"Add new " + metaData.arrayItemName + "\" />";
         var nextIndex = settingValue.length;
         events.push({
-          selector: "#imageInfoSettingArrayAdd" + setting,
+          selector: "#imageInfoSettingArrayAdd_" + setting,
           event: function() {
             $(this).click(function() {
               var newEvents = [];
@@ -786,7 +789,7 @@ function main()
       dimensionHtml += " class=\"imageInfoButton\" style=\"background-color: #" + settings.lowResolutionColor + "; color: #" + settings.lowResolutionTextColor + ";\"";
     else if (settings.highlightHighResolution && Math.max(width, height) > settings.highResolution)
       dimensionHtml += " class=\"imageInfoButton\" style=\"background-color: #" + settings.highResolutionColor + "; color: #" + settings.highResolutionTextColor + ";\"";
-    dimensionHtml += ">" + width + "x" + height + "</div>";
+    dimensionHtml += ">" + width + "x" + height + "</div>, ";
     return dimensionHtml;
   }
 
@@ -862,47 +865,52 @@ function main()
       infoHtmlItems.push(headerHtml);
     if (mediaInfo.pageLink)
       infoHtmlItems.push("<a href=\"" + mediaInfo.pageLink + "\">" + mediaInfo.pageLinkText + "</a>");
+    if (mediaInfo.pageExtraInfo)
+      infoHtmlItems.push(mediaInfo.pageExtraInfo);
     var tagItems = [];
-    if (mediaInfo.mediaTagHtml)
-      tagItems.push(mediaInfo.mediaTagHtml);
+    if (mediaInfo.mediaTagHtmlItems && mediaInfo.mediaTagHtmlItems.length > 0)
+      tagItems.push(mediaInfo.mediaTagHtmlItems.join(" "));
     if (mediaInfo.rating)
-      tagItems.push("<div class=\"" + (["R", "NSFW", "Adult", "Possibly Offensive"].indexOf(mediaInfo.rating) > -1 ? "nsfw-stamp " : "") + "stamp\">" + mediaInfo.rating + "</div>");
+      tagItems.push("<div class=\"" + (/R|NSFW|Adult|Possibly Offensive/.test(mediaInfo.rating) ? "nsfw-stamp " : "") + "stamp\">" + mediaInfo.rating + "</div>");
     if (mediaInfo.source)
       tagItems.push("<a href=\"" + mediaInfo.source + "\">source</a>");
     if (tagItems.length > 0)
       infoHtmlItems.push(tagItems.join(" "));
-    var mediaInfoHtml = "<div class=\"imageInfoDuration\">";
-    if (mediaInfo.animated)
-      mediaInfoHtml += getDurationHtml(mediaInfo.duration, mediaInfo.minDuration, mediaInfo.maxDuration);
-    mediaInfoHtml += "</div><div class=\"imageInfoFrameRate\"";
-    if (mediaInfo.frameRate || mediaInfo.gifFrames || mediaInfo.videoFrames || mediaInfo.animated)
+    if (!mediaInfo.albumImageCount)
     {
-      if (mediaInfo.frameRate)
-        mediaInfoHtml += "data-frame-rate=\"" + mediaInfo.frameRate + "\"";
-      if (mediaInfo.gifFrames)
-        mediaInfoHtml += "data-gif-frames=\"" + mediaInfo.gifFrames + "\"";
-      if (mediaInfo.videoFrames)
-        mediaInfoHtml += "data-video-frames=\"" + mediaInfo.videoFrames + "\"";
-      mediaInfoHtml += ">" + getFrameRateHtml(null, null, mediaInfo.frameRate, mediaInfo.videoFrames, mediaInfo.gifFrames, mediaInfo.duration);
-    }
-    mediaInfoHtml += "</div>";
-    if (mediaInfo.width && mediaInfo.height)
-      mediaInfoHtml += getDimensionsHtml(mediaInfo.width, mediaInfo.height);
-    else if (!mediaInfo.albumImageCount)
-      mediaInfoHtml += "<div class=\"imageInfoDimensions\"></div>";
-    if (mediaInfoHtml)
-      infoHtmlItems.push(mediaInfoHtml);
-    var sizeHtml = "";
-    if (mediaInfo.videoSize)
-    {
-      sizeHtml += getSizeHtml(mediaInfo.videoSize, true, "video");
+      var mediaDetailHtml = "<div class=\"imageInfoDuration\">";
+      if (mediaInfo.animated)
+        mediaDetailHtml += getDurationHtml(mediaInfo.duration, mediaInfo.minDuration, mediaInfo.maxDuration);
+      mediaDetailHtml += "</div><div class=\"imageInfoFrameRate\"";
+      if (mediaInfo.frameRate || mediaInfo.gifFrames || mediaInfo.videoFrames || mediaInfo.animated)
+      {
+        if (mediaInfo.frameRate)
+          mediaDetailHtml += "data-frame-rate=\"" + mediaInfo.frameRate + "\"";
+        if (mediaInfo.gifFrames)
+          mediaDetailHtml += "data-gif-frames=\"" + mediaInfo.gifFrames + "\"";
+        if (mediaInfo.videoFrames)
+          mediaDetailHtml += "data-video-frames=\"" + mediaInfo.videoFrames + "\"";
+        mediaDetailHtml += ">" + getFrameRateHtml(null, null, mediaInfo.frameRate, mediaInfo.videoFrames, mediaInfo.gifFrames, mediaInfo.duration);
+      }
+      else
+        mediaDetailHtml += ">";
+      mediaDetailHtml += "</div>";
+      if (mediaInfo.width && mediaInfo.height)
+        mediaDetailHtml += getDimensionsHtml(mediaInfo.width, mediaInfo.height);
+      else
+        mediaDetailHtml += "<div class=\"imageInfoDimensions\"></div>";
+      if (mediaInfo.videoSize)
+      {
+        mediaDetailHtml += getSizeHtml(mediaInfo.videoSize, true, "video");
+        if (mediaInfo.imageSize)
+          mediaDetailHtml +=  " / ";
+      }
       if (mediaInfo.imageSize)
-        sizeHtml +=  " / ";
+        mediaDetailHtml += getSizeHtml(mediaInfo.imageSize, !mediaInfo.isVideoLink || !mediaInfo.videoSize, mediaInfo.animated ? "GIF" : "image");
+      if (mediaInfo.width && mediaInfo.height && (mediaInfo.videoSize || mediaInfo.imageSize))
+        mediaDetailHtml += " <div class=\"imageInfoTagMedia imageInfoLink\" title=\"tag this media item\">[T]</div>";
+      infoHtmlItems.push(mediaDetailHtml);
     }
-    if (mediaInfo.imageSize)
-      sizeHtml += getSizeHtml(mediaInfo.imageSize, !mediaInfo.isVideoLink || !mediaInfo.videoSize, mediaInfo.animated ? "GIF" : "image");
-    if (sizeHtml)
-      infoHtmlItems.push(sizeHtml);
     if (mediaInfo.datetime)
     {
       var dateHtml = "<div ";
@@ -919,10 +927,10 @@ function main()
       var similarity = 0;
       if (settings.highlightSameTitle)
       {
-        var redditTitle = positionElement.parent().find("a").first().text().trim().toLowerCase();
+        var redditTitle = (positionElement.attr("href") ? positionElement : entry.find("a.title")).text().trim().toLowerCase();
         var mediaTitle = mediaInfo.title.replace(/[\u00a0\s]+/g, " ").trim().toLowerCase();
         var mediaTitleAlt = mediaTitle.replace(/imgur/gi, "reddit");
-        if (redditTitle == mediaTitle || redditTitle == mediaTitleAlt || redditTitle == mediaTitleAlt.replace(/\b(i|me|my|mine|myself|we|us|our|ours|ourselves|meet|itap)\b/gi, ""))
+        if (redditTitle == mediaTitle || redditTitle == mediaTitleAlt || redditTitle == mediaTitleAlt.replace(/\b(i|me|my|mine|myself|we|us|our|ours|ourselves|meet|itap)\b/gi, "").replace(/[\u00a0\s]+/g, " "))
           titleHtml += "<div class=\"imageInfoButton\" style=\"background-color: #" + settings.sameTitleColor + "; color: #" + settings.sameTitleTextColor + ";\" title=\"reddit title matches " + mediaInfo.mediaName + " title\">same title</div> ";
         else
         {
@@ -934,25 +942,44 @@ function main()
           if (similarity >= settings.minimumTitleSimilarity)
             titleHtml += "<div class=\"imageInfoButton\" style=\"background-color: #" + settings.sameTitleColor + "; color: #" + settings.sameTitleTextColor + ";\" title=\"reddit title is similar to " + mediaInfo.mediaName + " title (non-symbol character difference: " + fuzziness + ")\">similar title " + similarity + "%</div> ";
         }
-        if (mediaInfo.description && mediaInfo.title == mediaInfo.description)
+        if (mediaInfo.title == mediaInfo.description)
           titleHtml += "<div class=\"imageInfoButton\" style=\"background-color: #" + settings.sameTitleColor + "; color: #" + settings.sameTitleTextColor + ";\" title=\"" + mediaInfo.mediaName + " title matches " + mediaInfo.mediaName + " description, this is common with account farmers\">title/description match</div> ";
       }
-      titleHtml += "\"";
+      titleHtml += "<div class=\"imageInfoDesc imageInfoButton\">\"";
       if (similarity)
-        titleHtml += "<div title=\"similarity: " + similarity + "%\">" + linkify(mediaInfo.title) + "</div>";
+        titleHtml += "<div title=\"similarity to reddit title: " + similarity + "%\">" + linkify(mediaInfo.title) + "</div>";
       else
         titleHtml += linkify(mediaInfo.title);
-      titleHtml += (mediaInfo.description ? " /// " + linkify(mediaInfo.description).replace(/\n/g, " // ") : "") + "\"";
+      titleHtml += (mediaInfo.description ? " /// " + linkify(mediaInfo.description).replace(/\n/g, " // ") : "") + "\"</div>";
     }
     else if (mediaInfo.description)
-      titleHtml += "\"" + linkify(mediaInfo.description).replace(/\n/g, " // ") + "\"";
+      titleHtml += "<div class=\"imageInfoDesc imageInfoButton\">\"" + linkify(mediaInfo.description).replace(/\n/g, " // ") + "\"</div>";
     if (titleHtml)
       infoHtmlItems.push(titleHtml);
     var infoHtml = "<div class=\"imageInfo\">" + infoHtmlItems.join(", ") + "</div>";
     if (positionElement.attr("href"))
       infoHtml = "<div class=\"" + (settings.commentMediaInfoInline ? "imageInfoCommentInline" : "imageInfoComment") + "\"><div class=\"imageInfoCommentInlineExpando\"></div>" + infoHtml  + "</div>";
-    positionElement.parent().find(".imageInfoRetry").remove();
-    return $(infoHtml).insertAfter(positionElement);
+    positionElement.nextAll(".imageInfoRetry").remove();
+    var mediaInfoElement = $(infoHtml).insertAfter(positionElement);
+    if (mediaInfo.width && mediaInfo.height && (mediaInfo.videoSize || mediaInfo.imageSize))
+      mediaInfoElement.find(".imageInfoTagMedia").click(function() {
+        $(".imageInfoSettingsButton").click();
+        $("#imageInfoSetting_groupTags").removeClass("imageInfoSettingGroupCollapsed");
+        $("#imageInfoSettingArrayAdd_imageInfoSetting_mediaTags").click();
+        var tagElements = $(".imageInfoSetting[data-parent=imageInfoSetting_mediaTags]").last().find("input").each(function(index) {
+          if (index === 0)
+            $(this).val(mediaInfo.width);
+          else if (index == 1)
+            $(this).val(mediaInfo.height);
+          else if (index == 2)
+            $(this).val(mediaInfo.imageSize || mediaInfo.videoSize);
+          else if (index == 3)
+            $(this).focus();
+          else
+            return false;
+        });
+      });
+    return mediaInfoElement;
   }
 
   function addRetryButton(link, positionElement, request, error)
@@ -969,16 +996,15 @@ function main()
     });
   }
 
-  function getMediaTagHtml(mediaTags, width, height, imgSize, videoSize)
+  function addMediaTagHtmlItems(tagHtmlItems, width, height, imgSize, videoSize)
   {
-    var tagHtmlItems = [];
     for (i = 0; i < mediaTags.length; i++)
     {
       var imgTag = mediaTags[i];
       if (imgTag.tag && imgTag.width == width && imgTag.height == height && (imgTag.size == imgSize || imgTag.size == videoSize))
         tagHtmlItems.push("<div class=\"imageInfoButton\" style=\"background-color: #" + imgTag.tagColor + "; color: #" + imgTag.tagTextColor + ";\"" + (imgTag.tagDetails ? " title=\"" + imgTag.tagDetails + "\"" : "") + ">" + imgTag.tag + "</div>");
     }
-    return tagHtmlItems.join(" ");
+    return tagHtmlItems;
   }
 
   function updateAlbumExpando(expandoContent, currentImage, imgurImages, slimgImages)
@@ -1016,16 +1042,11 @@ function main()
       var slimgImage = slimgImages[currentImage];
       imgSrc = slimgImage.url_direct;
       videoSrc = slimgImage.mp4;
-      var mediaTagHtmlItems = [];
-      if (tagData && tagData.mediaTags)
-        mediaTagHtmlItems.push(getMediaTagHtml(tagData.mediaTags, slimgImage.width, slimgImage.height, slimgImage.size));
-      if (settings.mediaTags)
-        mediaTagHtmlItems.push(getMediaTagHtml(settings.mediaTags, slimgImage.width, slimgImage.height, slimgImage.size));
       mediaInfo = {
         mediaName: "slimg",
         pageLink: "https://sli.mg/" + slimgImage.media_key,
         pageLinkText: "image page",
-        mediaTagHtml: mediaTagHtmlItems.filter(filterEmpty).join(" "),
+        mediaTagHtmlItems: addMediaTagHtmlItems([], slimgImage.width, slimgImage.height, slimgImage.size),
         datetime: slimgImage.created * 1000,
         title: slimgImage.description,
         width: slimgImage.width,
@@ -1234,16 +1255,13 @@ function main()
       {
         for (var i = 0; i < slimgImages.length; i++)
         {
-          if (tagData && tagData.mediaTags)
-            mediaTagHtmlItems.push(getMediaTagHtml(tagData.mediaTags, slimgImages[i].width, slimgImages[i].height, slimgImages[i].size));
-          if (settings.mediaTags)
-            mediaTagHtmlItems.push(getMediaTagHtml(settings.mediaTags, slimgImages[i].width, slimgImages[i].height, slimgImages[i].size));
+          mediaTagHtmlItems = addMediaTagHtmlItems(mediaTagHtmlItems, slimgImages[i].width, slimgImages[i].height, slimgImages[i].size);
           if (settings.highlightAnimated && slimgImages[i].animated)
             highlightLink(expandoContent, settings.albumColor);
         }
       }
       var albumCountClass = length > 99 ? " imageInfoAlbumCountDigits3" : (length > 9 ? " imageInfoAlbumCountDigits2" : "");
-      var expandoHtml = mediaTagHtmlItems.filter(filterEmpty).join(" ") + "<div class=\"imageInfoAlbumHeader\"><div class=\"imageInfoAlbumControls\"><div class=\"imageInfoAlbumLeft imageInfoButton imageInfoLink\">&lt;</div><div class=\"imageInfoAlbumCurrentImage" + albumCountClass + "\">0</div> of <div class=\"imageInfoAlbumTotalImages" + albumCountClass + "\">" + length + "</div><div class=\"imageInfoAlbumRight imageInfoButton imageInfoLink\">&gt;</div></div><div class=\"imageInfoAlbumTitle\">" + (title ? linkify(title) : "(no title)");
+      var expandoHtml = mediaTagHtmlItems.join(" ") + "<div class=\"imageInfoAlbumHeader\"><div class=\"imageInfoAlbumControls\"><div class=\"imageInfoAlbumLeft imageInfoButton imageInfoLink\">&lt;</div><div class=\"imageInfoAlbumCurrentImage" + albumCountClass + "\">0</div> of <div class=\"imageInfoAlbumTotalImages" + albumCountClass + "\">" + length + "</div><div class=\"imageInfoAlbumRight imageInfoButton imageInfoLink\">&gt;</div></div><div class=\"imageInfoAlbumTitle\">" + (title ? linkify(title) : "(no title)");
       if (description)
         expandoHtml += "<br/>" + linkify(description);
       expandoHtml += "</div></div><div class=\"imageInfoExpandoMsg\">...</div><div class=\"imageInfoAlbumContent\"><img class=\"imageInfoExpandoImage\"";
@@ -1424,8 +1442,8 @@ function main()
           this.click();
         }
       });
-    if (settings.removeNativeExpandos)
-      positionElement.parent().find(".expando-button").hide().addClass("imageInfoRemoved");
+    if (settings.removeNativeExpandos && !commentImageInfoElement)
+      entry.find(".expando-button").add(entry.find(".media-preview")).hide().addClass("imageInfoRemoved");
     $(".imageInfoShowAll").first().text("rii show all (" + $(".imageInfoExpando").length + ")");
   }
 
@@ -1464,17 +1482,20 @@ function main()
       mediaTagHtmlItems.push("<div class=\"imageInfoButton\" style=\"background-color: #" + settings.galleryRemovedColor + "; color: #" + settings.galleryRemovedTextColor + ";\" title=\"this imgur content has a title/description but is not in the imgur gallery, possibly meaning that a previous gallery post was removed from the gallery (by the user or by imgur due to spam or a rule violation), that this user is using imgur to spam, or that this is a link to an image in an album gallery post\">non-gallery post with title/desc</div>");
     if (isThumbnail && settings.highlightThumbnailVersion)
       mediaTagHtmlItems.push("<div class=\"imageInfoButton\" style=\"background-color: #" + settings.thumbnailVersionColor + "; color: #" + settings.thumbnailVersionTextColor + ";\" title=\"link uses an imgur suffix that loads a smaller version and will break animated images - see https://api.imgur.com/models/image\">thumbnail format</div>");
+    var galleryInfo = typeof imgurItem.points == "undefined" ? null : "<div title=\"imgur gallery post +" + imgurItem.ups + "/-" + imgurItem.downs + ", " + imgurItem.comment_count + " comments\">" + imgurItem.points + "pts</div>";
     if (imgurItem.images)
     {
+      var imageDescriptions = [];
       var images = imgurItem.images;
       for (var i = 0; i < images.length; i++)
       {
-        if (tagData && tagData.mediaTags)
-          mediaTagHtmlItems.push(getMediaTagHtml(tagData.mediaTags, images[i].width, images[i].height, images[i].size, images[i].mp4_size));
-        if (settings.mediaTags)
-          mediaTagHtmlItems.push(getMediaTagHtml(settings.mediaTags, images[i].width, images[i].height, images[i].size, images[i].mp4_size));
+        mediaTagHtmlItems = addMediaTagHtmlItems(mediaTagHtmlItems, images[i].width, images[i].height, images[i].size, images[i].mp4_size);
         if (settings.highlightAnimated && images[i].animated)
           highlightLink(entry, settings.albumColor);
+        if (images[i].title)
+          imageDescriptions.push(images[i].title);
+        if (images[i].description)
+          imageDescriptions.push(images[i].description);
       }
       positionElement = showMediaInfo(entry, positionElement, {
         mediaName: imgurItem.in_gallery ? "imgur gallery" : "imgur",
@@ -1485,11 +1506,12 @@ function main()
         authorAltLink: author ? "https://imgur.com/user/" + author : null,
         pageLink: "https://imgur.com/" + (imgurItem.in_gallery ? "gallery/" : "a/") + imgurItem.id,
         pageLinkText: "imgur " + (imgurItem.in_gallery ? "gallery" : "album") + " page",
-        mediaTagHtml: mediaTagHtmlItems.filter(filterEmpty).join(" "),
+        pageExtraInfo: galleryInfo,
+        mediaTagHtmlItems: mediaTagHtmlItems,
         albumImageCount: images.length,
         datetime: imgurItem.datetime * 1000,
         title: imgurItem.title,
-        description: imgurItem.description,
+        description: (imgurItem.description || "") + (imageDescriptions.length > 0 ? " /// " + imageDescriptions.join(" // ") : ""),
         tags: imgurItem.topic || imgurItem.section,
         rating: imgurItem.nsfw ? "NSFW" : null
       });
@@ -1497,10 +1519,7 @@ function main()
     }
     else
     {
-      if (tagData && tagData.mediaTags)
-        mediaTagHtmlItems.push(getMediaTagHtml(tagData.mediaTags, imgurItem.width, imgurItem.height, imgurItem.size, imgurItem.mp4_size));
-      if (settings.mediaTags)
-        mediaTagHtmlItems.push(getMediaTagHtml(settings.mediaTags, imgurItem.width, imgurItem.height, imgurItem.size, imgurItem.mp4_size));
+      mediaTagHtmlItems = addMediaTagHtmlItems(mediaTagHtmlItems, imgurItem.width, imgurItem.height, imgurItem.size, imgurItem.mp4_size);
       if (settings.highlightAnimated && imgurItem.animated)
         highlightLink(entry, linkColor(href));
       positionElement = showMediaInfo(entry, positionElement, {
@@ -1512,7 +1531,8 @@ function main()
         authorAltLink: author ? "https://imgur.com/user/" + author : null,
         pageLink: "https://imgur.com/" + (imgurItem.in_gallery ? "gallery/" : "") + imgurItem.id,
         pageLinkText: "imgur " + (imgurItem.in_gallery ? "gallery" : "image") + " page",
-        mediaTagHtml: mediaTagHtmlItems.filter(filterEmpty).join(" "),
+        pageExtraInfo: galleryInfo,
+        mediaTagHtmlItems: mediaTagHtmlItems,
         width: imgurItem.width,
         height: imgurItem.height,
         videoSize: imgurItem.mp4_size,
@@ -1535,7 +1555,7 @@ function main()
       headers: { Authorization: "Client-ID " + settings.imgurClientId },
       success: function(imgurData) {
         imgurData = imgurData.data;
-        if (imgurData.in_gallery && !galleryFailed)
+        if (imgurData.in_gallery && !galleryFailed && settings.loadImgurGalleryInfo)
           getImgurGallery(imgurId, link, entry, positionElement, href, imgurData, isThumbnail, isAlbum);
         else
         {
@@ -1596,9 +1616,10 @@ function main()
     }
     var minDuration = (gfyItem.numFrames / (+gfyItem.frameRate + 1)).toFixed(2);
     var maxDuration = (gfyItem.numFrames / gfyItem.frameRate).toFixed(2);
-    var mediaTagHtml = "";
+    var mediaTagHtmlItems = [];
     if (settings.highlightThumbnailVersion && /.com\/\w+\-[\w_]+(\.\w+)?(#.*)?$/i.test(href))
-      mediaTagHtml += "<div class=\"imageInfoButton\" style=\"background-color: #" + settings.thumbnailVersionColor + "; color: #" + settings.thumbnailVersionTextColor + ";\" title=\"link to a smaller size-restricted version of this gfy, or to a static thumbnail\">small/thumb version</div>";
+      mediaTagHtmlItems.push("<div class=\"imageInfoButton\" style=\"background-color: #" + settings.thumbnailVersionColor + "; color: #" + settings.thumbnailVersionTextColor + ";\" title=\"link to a smaller size-restricted version of this gfy, or to a static thumbnail\">small/thumb version</div>");
+    mediaTagHtmlItems = addMediaTagHtmlItems(mediaTagHtmlItems, gfyItem.width, gfyItem.height, gfyItem.gifSize, gfyItem.mp4Size);
     positionElement = showMediaInfo(entry, positionElement, {
       mediaName: "gfycat",
       isVideoLink: /.com\/\w+(\.(mp4|webm))?(#.*)?$/i.test(href),
@@ -1606,7 +1627,7 @@ function main()
       authorLink: mediaTag ? "" : "https://gfycat.com/@" + gfyItem.userName,
       pageLink: "https://gfycat.com/" + gfyItem.gfyName,
       pageLinkText: "gfy page",
-      mediaTagHtml: mediaTagHtml,
+      mediaTagHtmlItems: mediaTagHtmlItems,
       source: gfyItem.url,
       minDuration: minDuration,
       maxDuration: maxDuration,
@@ -1787,6 +1808,7 @@ function main()
       authorAltLink: giphyItem.user && giphyItem.user.twitter ? "https://twitter.com/" + giphyItem.user.twitter.replace("@", "") : null,
       pageLink: giphyItem.url,
       pageLinkText: "giphy page",
+      mediaTagHtmlItems: addMediaTagHtmlItems([], img.width, img.height, img.size, img.mp4_size),
       source: giphyItem.source,
       gifFrames: img.frames,
       width: img.width,
@@ -1838,6 +1860,7 @@ function main()
         authorName: slimgItem.username,
         pageLink: slimgItem.url,
         pageLinkText: "slimg image page",
+        mediaTagHtmlItems: addMediaTagHtmlItems([], slimgImage.width, slimgImage.height, slimgImage.size),
         width: slimgItem.width,
         height: slimgItem.height,
         imageSize: slimgItem.size,
@@ -2032,14 +2055,13 @@ function main()
     }
   }
 
-  function checkComment(comment, imgurComments, depth)
+  function checkComment(comment, imgurComments, depth, commentReposts)
   {
-    var commentReposts = 0;
     var commentText = comment.text().trim();
     var commentTextStripped = commentText.replace(/[^\w\s]/g, "");
     if (commentTextStripped.length > settings.minimumCommentLength && commentText != "[deleted]")
     {
-      for (var i = 0; i < imgurComments.length; i++)
+      for (var i = 0; i < imgurComments.length && commentReposts < 5; i++)
       {
         var imgurComment = imgurComments[i].comment.replace(/[\u00a0\s]+/g, " ").trim();
         var imgurCommentStripped = imgurComment.replace(/[^\w\s]/g, "");
@@ -2071,7 +2093,7 @@ function main()
           }
         }
         if (!settings.checkTopLevelCommentsOnly)
-          commentReposts += checkComment(comment, imgurComments[i].children, depth + 1);
+          commentReposts = checkComment(comment, imgurComments[i].children, depth + 1, commentReposts);
       }
     }
     return commentReposts;
@@ -2085,7 +2107,7 @@ function main()
     $(".entry .usertext-body").each(function() {
       try
       {
-        commentReposts += checkComment($(this), imgurComments, 0);
+        commentReposts += checkComment($(this), imgurComments, 0, 0);
       }
       catch (error)
       {
@@ -2150,10 +2172,16 @@ function main()
     {
       tagData = cacheTagData.tagData;
       tagDataUpdateTime = cacheTagData.updateTime;
+      mediaTags = tagData.mediaTags || [];
       descriptionHighlight = tagData.descriptionHighlight || [];
     }
     else
+    {
+      mediaTags = [];
       descriptionHighlight = [];
+    }
+    if (settings.mediaTags)
+      mediaTags = mediaTags.concat(settings.mediaTags);
     if (settings.descriptionHighlight)
       descriptionHighlight = descriptionHighlight.concat(settings.descriptionHighlight);
   }
@@ -2189,7 +2217,7 @@ function main()
     for (intervalId in frameRateInterval)
       window.clearInterval(frameRateInterval[intervalId]);
     frameRateInterval = {};
-    $(".expando-button.selftext.collapsed").off("click");
+    $(".expando-button.selftext").off("click");
     $(".imgurCommentCheck").remove();
     $(".imgurCommentCheckResults").remove();
     $(".imageInfoSettingsButton").parent().remove();
@@ -2205,7 +2233,7 @@ function main()
     $(".imageInfoCommentReport").remove();
     $(".imageInfoGfyLink").remove();
     $("a.title").removeClass("imageInfoDurationAdded");
-    $(".expando-button.imageInfoRemoved").show().removeClass("imageInfoRemoved");
+    $(".imageInfoRemoved").show().removeClass("imageInfoRemoved");
   }
 
   function init()
@@ -2316,7 +2344,7 @@ function main()
     currentLinkList = $(".thing.link:not(.self) a.title");
     if (settings.addCommentExpandos)
     {
-      currentLinkList = currentLinkList.add($(".entry .usertext-body a"));
+      currentLinkList = currentLinkList.add($(".entry .usertext-body a[href]:not(.res-expando-link)"));
       $(".expando-button.selftext.collapsed").click(function() {
         if ($(this).hasClass("collapsed"))
         {
