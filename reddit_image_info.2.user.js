@@ -5,7 +5,7 @@
 // @include     https://*.reddit.com/*
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js
 // @require     https://github.com/EastDesire/jscolor/raw/master/jscolor.min.js
-// @version     2.2.0.0
+// @version     2.2.1.0
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_listValues
@@ -1397,8 +1397,8 @@ function main()
                     headers: { Authorization: "Client-ID " + settings.slimgClientId },
                     success: function(slimgData) {
                       var albumData = slimgData.data;
-                      addAlbumExpando(entry, expando, expandoContent, null, albumData.media, slimgItem.description, null);
                       cacheData(slimgItem.album_key + "-a", albumData, settings.slimgAlbumCacheTime);
+                      addAlbumExpando(entry, expando, expandoContent, null, albumData.media, slimgItem.description, null);
                     },
                     error: function(request, status, error) {
                       addRetryButton(entry, positionElement, request, error);
@@ -1443,7 +1443,7 @@ function main()
         }
       });
     if (settings.removeNativeExpandos && !commentImageInfoElement)
-      entry.find(".expando-button").add(entry.find(".media-preview")).hide().addClass("imageInfoRemoved");
+      entry.find(".expando-button:not(.collapsedExpando)").add(entry.find(".media-preview")).hide().addClass("imageInfoRemoved");
     $(".imageInfoShowAll").first().text("rii show all (" + $(".imageInfoExpando").length + ")");
   }
 
@@ -1559,8 +1559,8 @@ function main()
           getImgurGallery(imgurId, link, entry, positionElement, href, imgurData, isThumbnail, isAlbum);
         else
         {
-          showImgurInfo(entry, positionElement, href, imgurData, isThumbnail);
           cacheData(imgurId, imgurData, settings.imgurPostCacheTime);
+          showImgurInfo(entry, positionElement, href, imgurData, isThumbnail);
         }
         if (!galleryFailed)
           processNextLink();
@@ -1569,8 +1569,8 @@ function main()
         var errorData = request.responseJSON;
         if (errorData && errorData.error && errorData.error.indexOf("Unable to find an image with the id") >= 0)
         {
-          showImgurInfo(entry, positionElement, href, errorData, isThumbnail);
           cacheData(imgurId, errorData, settings.imgurPostCacheTime);
+          showImgurInfo(entry, positionElement, href, errorData, isThumbnail);
         }
         else
           addRetryButton(link, positionElement, request, error);
@@ -1586,8 +1586,8 @@ function main()
       headers: { Authorization: "Client-ID " + settings.imgurClientId },
       success: function(imgurData) {
         imgurData = imgurData.data;
-        showImgurInfo(entry, positionElement, href, imgurData, isThumbnail);
         cacheData(imgurId, imgurData, settings.imgurPostCacheTime);
+        showImgurInfo(entry, positionElement, href, imgurData, isThumbnail);
         if (!nonGalleryImgurData)
           processNextLink();
       },
@@ -1595,8 +1595,8 @@ function main()
         addRetryButton(link, positionElement, request, error);
         if (nonGalleryImgurData)
         {
-          showImgurInfo(entry, positionElement, href, nonGalleryImgurData, isThumbnail);
           cacheData(imgurId, nonGalleryImgurData, settings.imgurPostCacheTime);
+          showImgurInfo(entry, positionElement, href, nonGalleryImgurData, isThumbnail);
         }
         else
         {
@@ -1719,8 +1719,8 @@ function main()
         success: function(gfyData) {
           if (!gfyData.error)
             gfyData = gfyData.gfyItem;
-          showGfyInfo(entry, positionElement, href, gfyData, mediaTag);
           cacheData(gfyName, gfyData, settings.gfycatPostCacheTime);
+          showGfyInfo(entry, positionElement, href, gfyData, mediaTag);
           if (mediaTag)
           {
             button.remove();
@@ -1761,8 +1761,8 @@ function main()
           }
           if (gfyData.gfyId)
           {
-            showGfyInfo(entry, positionElement, href, gfyData, mediaTag);
             cacheData(mediaTag, gfyData, settings.otherCacheTime);
+            showGfyInfo(entry, positionElement, href, gfyData, mediaTag);
           }
           else
           {
@@ -1860,7 +1860,7 @@ function main()
         authorName: slimgItem.username,
         pageLink: slimgItem.url,
         pageLinkText: "slimg image page",
-        mediaTagHtmlItems: addMediaTagHtmlItems([], slimgImage.width, slimgImage.height, slimgImage.size),
+        mediaTagHtmlItems: addMediaTagHtmlItems([], slimgItem.width, slimgItem.height, slimgItem.size),
         width: slimgItem.width,
         height: slimgItem.height,
         imageSize: slimgItem.size,
@@ -1906,8 +1906,8 @@ function main()
                   $("<div class=\"imageInfoButton imageInfoGreyButton\">Error loading giphy data</div>").insertAfter(positionElement);
                 else
                 {
-                  showGiphyInfo(entry, positionElement, href, giphyData);
                   cacheData(mediaTag, giphyData, settings.otherCacheTime);
+                  showGiphyInfo(entry, positionElement, href, giphyData);
                 }
                 processNextLink();
               },
@@ -1935,8 +1935,8 @@ function main()
               $.ajax({
                 url: "https://gifs.com/api/" + mediaTag,
                 success: function(gifsData) {
-                  showGifsDotComInfo(entry, positionElement, href, gifsData, mediaTag);
                   cacheData(mediaTag, gifsData, settings.otherCacheTime);
+                  showGifsDotComInfo(entry, positionElement, href, gifsData, mediaTag);
                   processNextLink();
                 },
                 error: function(request, status, error) {
@@ -1969,8 +1969,8 @@ function main()
                     headers: { Authorization: "Client-ID " + settings.slimgClientId },
                     success: function(slimgData) {
                       slimgData = slimgData.data;
-                      showSlimgInfo(entry, positionElement, href, slimgData);
                       cacheData(mediaTag, slimgData, settings.slimgPostCacheTime);
+                      showSlimgInfo(entry, positionElement, href, slimgData);
                       processNextLink();
                     },
                     error: function(request, status, error) {
@@ -2140,8 +2140,8 @@ function main()
         headers: { Authorization: "Client-ID " + settings.imgurClientId },
         success: function(imgurData) {
           var imgurComments = imgurData.data;
-          checkAllComments(imgurComments, mediaTag);
           cacheData(mediaTag + "-c", imgurComments, settings.imgurCommentsCacheTime);
+          checkAllComments(imgurComments, mediaTag);
           $(".imgurCommentCheck").remove();
         },
         error: function(request, status, error) {
